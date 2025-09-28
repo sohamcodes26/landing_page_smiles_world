@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Marko+One&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Londrina+Shadow&display=swap");
+
+* {
+  padding: 0px;
+  margin: 0px;
+
+  scrollbar-width: none;
+
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+
+html, body {
+  overflow-x: clip; /* Prevents horizontal scroll */
+}

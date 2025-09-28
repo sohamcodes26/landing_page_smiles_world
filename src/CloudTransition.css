@@ -1,0 +1,45 @@
+.transition-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999; /* Ensure it's on top of all other content */
+  pointer-events: none; /* Allows clicks to pass through when hidden */
+  overflow: hidden;
+}
+
+.transition-cloud {
+  position: absolute;
+  top: 0;
+  width: 150vw; /* Slightly >50% to prevent a pixel gap in the middle */
+  height: 100vh; /* Using your existing cloud image */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-cloud.left {
+  background-image: url('./assets/cloud1.png');
+  scale: 1.5;
+  left: 0;
+  transform: translateX(-150%);
+}
+
+.transition-cloud.right {
+  background-image: url('./assets/cloud2n.png');
+  scale: 1.5;
+  right: 0;
+  /* We flip this cloud horizontally for a more dynamic look */
+  transform: translateX(150%);
+}
+
+/* When the transition is active, slide the clouds into view */
+.transition-container.active .transition-cloud.left {
+  transform: translateX(0);
+}
+
+.transition-container.active .transition-cloud.right {
+  transform: translateX(0);
+}

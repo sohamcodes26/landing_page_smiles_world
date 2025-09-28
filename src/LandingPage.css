@@ -1,0 +1,261 @@
+.cloud-container {
+  width: 100vw;
+  height: fit-content;
+  overflow-x: hidden;
+  position: fixed;
+  top: 0px;
+  z-index: 3;
+}
+
+.clouds {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 10000%;
+  background-color: rgb(88, 180, 255);
+  background-image: url("./assets/clouds2.png");
+  background-repeat: repeat-x;
+  background-size: contain;
+  animation: slideClouds 400s linear infinite;
+  z-index: 1;
+}
+
+@keyframes slideClouds {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.top {
+  position: relative;
+  z-index: 2;
+  font-family: 'Marko One', serif;
+  font-size: clamp(20px, 5vw, 30px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+}
+
+.logo {
+  width: clamp(20px, 13vw, 55px);
+  aspect-ratio: 1/1;
+  border: 1.5px solid black;
+  border-radius: 50%;
+}
+
+.tagline {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-family: 'Londrina Shadow', cursive;
+  font-size: clamp(35px, 10vw, 70px);
+  font-weight: 600;
+  margin-top: 3vh;
+}
+
+.hero {
+  position: fixed;
+  z-index: 2;
+  top: 0px;
+}
+
+.earth {
+  position: relative;
+  width: 80vw;
+  margin: auto;
+  margin-top: 25px;
+  aspect-ratio: 1/1;
+  margin-bottom: 5vh;
+}
+
+.earth::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("./assets/hero_main2.png");
+  background-size: cover;
+  animation: rotatingEarth 15s linear infinite;
+  z-index: 1;
+  transform-origin: calc(50% - 4px) 50%;
+}
+
+@keyframes rotatingEarth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.eyes {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  top: 33%;
+  width: fit-content;
+  gap: 10vw;
+  margin: auto;
+  padding-right: 3.5vw;
+  z-index: 2;
+  transition: transform 0.15s ease-out;
+}
+
+.eye {
+  position: relative;
+  width: 11vw;
+  height: 11vw;
+  display: block;
+  border-radius: 50%;
+  transition: transform 0.15s ease-out, background-color 0.15s ease-out, border-radius 0.15s ease-in-out;
+  background-color: rgb(255, 255, 255);
+  overflow: hidden; 
+}
+
+.ball {
+  position: absolute;
+  width: 5.5vw;
+  height: 5.5vw;
+  background-color: black;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  filter: blur(1px);
+  transition: opacity 0.1s ease;
+}
+
+.eye.blinking {
+  background-color: black;
+  transform: scaleY(0.2) scaleX(0.8);
+  border-radius: 50% / 100%;
+}
+
+.eye.blinking .ball {
+  opacity: 0;
+}
+
+.ball.idle-transition {
+  transition: top 1s ease-in-out, left 1s ease-in-out;
+}
+
+.smile {
+  width: 30vw;
+  position: relative;
+  margin: auto;
+  top: 44%;
+  padding-right: 3vw;
+  z-index: 2;
+  transition: transform 0.15s ease-out;
+}
+
+.smile > img {
+  width: 100%;
+}
+
+.face-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.face-container.idle-transition {
+  transition: transform 1s ease-in-out;
+}
+
+.face-container.blinking-face .eyes {
+  transform: translateY(2vw);
+}
+
+.face-container.blinking-face .smile {
+  transform: translateY(-2.2vw) scale(1.05, 0.85);
+}
+
+.btn {
+  width: fit-content;
+  margin: auto;
+  position: relative;
+  z-index: 2;
+  margin-top: 25px;
+  margin-bottom: 5vh;
+}
+
+.btn > button {
+  position: relative;
+  z-index: 20;
+  width: 110px;
+  background-color: rgb(32, 190, 179);
+  border-radius: 20px;
+  padding: 10px 15px;
+  color: rgb(0, 0, 0);
+  border: 4px solid black;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: 'Marko One', serif;
+}
+
+.cards {
+  position: relative;
+  z-index: 2;
+  font-family: 'Marko One', serif;
+}
+
+
+.card
+{
+  width: 75vw;
+  margin: auto;
+  font-size: 30px;
+  text-align: center;
+  background-color: white;
+  margin-bottom: 6vh;
+  border-radius: 20px;
+  padding: 10px;
+  border: 2px solid black;
+  animation: appear linear;
+  animation-timeline: view();
+  animation-range: entry 0% cover 100%;
+}
+
+.card:nth-child(4)
+{
+  margin-bottom: 5vh;
+}
+
+
+@keyframes appear {
+
+  0%
+  {
+    opacity: 1;
+  }
+
+  34%
+  {
+    opacity: 1;
+  }
+
+  45%
+  {
+    opacity: 0;
+  }
+
+  100%
+  {
+    opacity: 0;
+  }
+
+}
+
+

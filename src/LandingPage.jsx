@@ -45,28 +45,11 @@ const LandingPage = ({ onNavigate }) => {
             }
         };
 
-        // Mobile visibility fix: ensure all sections are visible on mobile devices
-        const ensureMobileVisibility = () => {
-            const isMobile = window.innerWidth <= 768;
-            if (isMobile) {
-                sectionRefs.forEach((ref) => {
-                    if (ref.current) {
-                        ref.current.classList.add('in-view');
-                        ref.current.style.transform = 'translateX(0)';
-                        ref.current.style.opacity = '1';
-                    }
-                });
-            }
-        };
-
         setCardsMargin();
-        ensureMobileVisibility();
         window.addEventListener('resize', setCardsMargin);
-        window.addEventListener('resize', ensureMobileVisibility);
 
         return () => {
             window.removeEventListener('resize', setCardsMargin);
-            window.removeEventListener('resize', ensureMobileVisibility);
         };
     }, []);
 
@@ -232,31 +215,78 @@ const LandingPage = ({ onNavigate }) => {
             }
         };
 
+        // Touch support for mobile devices
+        let touchStartY = 0;
+        let touchStartTime = 0;
+        
+        const handleTouchStart = (event) => {
+            touchStartY = event.touches[0].clientY;
+            touchStartTime = Date.now();
+        };
+        
+        const handleTouchEnd = (event) => {
+            if (isScrollingRef.current) return;
+            
+            const touchEndY = event.changedTouches[0].clientY;
+            const touchEndTime = Date.now();
+            const deltaY = touchStartY - touchEndY;
+            const deltaTime = touchEndTime - touchStartTime;
+            
+            // Only trigger on significant swipe (> 50px) and reasonable speed (< 300ms)
+            if (Math.abs(deltaY) > 50 && deltaTime < 300) {
+                const syntheticEvent = {
+                    deltaY: deltaY > 0 ? 100 : -100,
+                    preventDefault: () => event.preventDefault()
+                };
+                handleWheel(syntheticEvent);
+            }
+        };
+
         window.addEventListener('wheel', handleWheel, { passive: false });
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd, { passive: false });
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
         };
     }, []);
 
-    // Add Intersection Observer for mobile visibility
+    // Intersection Observer for proper animation triggering on all devices
     useEffect(() => {
-        const isMobile = window.innerWidth <= 768;
-        if (!isMobile) return;
-
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        entry.target.classList.add('in-view');
-                        entry.target.style.transform = 'translateX(0)';
-                        entry.target.style.opacity = '1';
+                        // Find the index of this section
+                        const sectionIndex = sectionRefs.findIndex(ref => ref.current === entry.target);
+                        if (sectionIndex !== -1 && sectionIndex !== currentIndexRef.current) {
+                            // Update current index and trigger animation
+                            currentIndexRef.current = sectionIndex;
+                            
+                            // Apply the same animation logic as the wheel handler
+                            sectionRefs.forEach((ref, index) => {
+                                const sectionEl = ref.current;
+                                if (sectionEl) {
+                                    if (index === sectionIndex) {
+                                        sectionEl.classList.add('in-view');
+                                        sectionEl.classList.remove('exit-left');
+                                    } else if (index < sectionIndex) {
+                                        sectionEl.classList.add('exit-left');
+                                        sectionEl.classList.remove('in-view');
+                                    } else {
+                                        sectionEl.classList.remove('in-view', 'exit-left');
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
             },
             {
-                threshold: 0.1,
-                rootMargin: '50px'
+                threshold: 0.3, // Require 30% visibility to trigger
+                rootMargin: '-10px'
             }
         );
 

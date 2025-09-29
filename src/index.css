@@ -29,11 +29,3 @@ img {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-
-/* Fallback for mobile when JS is disabled */
-@media (max-width: 768px) {
-  .animated-section {
-    transform: translateX(0) !important;
-    opacity: 1 !important;
-  }
-}

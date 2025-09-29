@@ -260,6 +260,13 @@
     padding: 0 20px;
     margin-bottom: 10px;
   }
+  
+  /* Override animations on mobile/tablet for better visibility */
+  .animated-section {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    transition: none !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -277,6 +284,12 @@
   .animated-section p {
     padding: 0 15px;
     font-size: 18px;
+  }
+  
+  /* Force images to be visible on mobile regardless of animation state */
+  .animated-section {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
   }
 }
 

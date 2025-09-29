@@ -45,11 +45,28 @@ const LandingPage = ({ onNavigate }) => {
             }
         };
 
+        // Mobile visibility fix: ensure all sections are visible on mobile devices
+        const ensureMobileVisibility = () => {
+            const isMobile = window.innerWidth <= 768;
+            if (isMobile) {
+                sectionRefs.forEach((ref) => {
+                    if (ref.current) {
+                        ref.current.classList.add('in-view');
+                        ref.current.style.transform = 'translateX(0)';
+                        ref.current.style.opacity = '1';
+                    }
+                });
+            }
+        };
+
         setCardsMargin();
+        ensureMobileVisibility();
         window.addEventListener('resize', setCardsMargin);
+        window.addEventListener('resize', ensureMobileVisibility);
 
         return () => {
             window.removeEventListener('resize', setCardsMargin);
+            window.removeEventListener('resize', ensureMobileVisibility);
         };
     }, []);
 
@@ -219,6 +236,38 @@ const LandingPage = ({ onNavigate }) => {
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
+        };
+    }, []);
+
+    // Add Intersection Observer for mobile visibility
+    useEffect(() => {
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        entry.target.style.transform = 'translateX(0)';
+                        entry.target.style.opacity = '1';
+                    }
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '50px'
+            }
+        );
+
+        sectionRefs.forEach((ref) => {
+            if (ref.current) {
+                observer.observe(ref.current);
+            }
+        });
+
+        return () => {
+            observer.disconnect();
         };
     }, []);
 

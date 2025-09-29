@@ -17,3 +17,15 @@
 html, body {
   overflow-x: clip; /* Prevents horizontal scroll */
 }
+
+/* Performance optimizations for mobile */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+}
+
+/* Ensure proper touch handling on mobile */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}

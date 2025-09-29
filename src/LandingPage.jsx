@@ -263,28 +263,28 @@ const LandingPage = ({ onNavigate }) => {
                     <div className="card">
                         <section className='animated-section' ref={section1Ref}>
                              <p>We offer all types of tours by air.</p>
-                             <img className='vehicle' src={plane} alt="" />
+                             <img className='vehicle' src={plane} alt="Airplane for air travel" loading="lazy" decoding="async" />
                         </section>
                     </div>
 
                     <div className="card">
                         <section className='animated-section' ref={section2Ref}>
                              <p>Explore the world by land with our exclusive packages.</p>
-                             <img className='vehicle' src={car} alt="" />
+                             <img className='vehicle' src={car} alt="Car for land travel" loading="lazy" decoding="async" />
                         </section>
                     </div>
 
                     <div className="card">
                         <section className='animated-section' ref={section3Ref}>
                              <p>Sail the seas on an unforgettable cruise.</p>
-                             <img className='vehicle' src={bus} alt="" />
+                             <img className='vehicle' src={bus} alt="Bus for group travel" loading="lazy" decoding="async" />
                         </section>
                     </div>
 
                     <div className="card">
                         <section className='animated-section' ref={section4Ref}>
                              <p>Your adventure is just a booking away.</p>
-                             <img className='vehicle' src={ship} alt="" />
+                             <img className='vehicle' src={ship} alt="Ship for cruise travel" loading="lazy" decoding="async" />
                         </section>
                     </div>
                     {/* ==================================================================== */}

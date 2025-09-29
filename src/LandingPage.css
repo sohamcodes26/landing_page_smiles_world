@@ -246,37 +246,69 @@
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .vehicle {
-    width: 70vw;
-    max-width: 250px;
-    margin-top: 3vh;
+    width: 60vw;
+    max-width: 220px;
+    margin: 20px auto;
     border: 3px solid red;
+    border-radius: 8px;
   }
   
   .card {
-    font-size: 24px;
+    font-size: 22px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  
+  .animated-section {
+    text-align: center;
+    max-width: 90vw;
+    margin: 0 auto;
   }
   
   .animated-section p {
-    padding: 0 20px;
-    margin-bottom: 10px;
+    padding: 0 15px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    font-weight: 500;
   }
 }
 
 @media (max-width: 480px) {
   .vehicle {
-    width: 80vw;
-    max-width: 200px;
-    margin-top: 2vh;
+    width: 70vw;
+    max-width: 180px;
+    margin: 15px auto;
     border: 2px solid red;
+    border-radius: 6px;
   }
   
   .card {
-    font-size: 20px;
+    font-size: 18px;
+    padding: 30px 15px;
+  }
+  
+  .animated-section {
+    max-width: 95vw;
   }
   
   .animated-section p {
-    padding: 0 15px;
-    font-size: 18px;
+    padding: 0 10px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    line-height: 1.3;
+  }
+  
+  .tagline {
+    font-size: clamp(28px, 8vw, 45px) !important;
+    margin-top: 2vh !important;
+  }
+  
+  .earth {
+    width: 75vw !important;
+    margin-top: 15px !important;
   }
 }
 
@@ -286,14 +318,40 @@
   transition: transform .5s ease-in, opacity 0.6s ease;
 }
 
-
 .animated-section.in-view {
   transform: translateX(0);
   opacity: 1;
 }
 
-
 .animated-section.exit-left {
   transform: translateX(-100vw);
   opacity: 0;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .animated-section {
+    transform: translateY(50px);
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+    will-change: transform, opacity;
+  }
+  
+  .animated-section.in-view {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .animated-section.exit-left {
+    transform: translateY(-30px);
+    opacity: 0.3;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow: hidden;
+  }
 }

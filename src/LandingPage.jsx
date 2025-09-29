@@ -215,78 +215,90 @@ const LandingPage = ({ onNavigate }) => {
             }
         };
 
-        // Touch support for mobile devices
+        // Simplified touch support for mobile devices
         let touchStartY = 0;
-        let touchStartTime = 0;
+        let isTouching = false;
         
         const handleTouchStart = (event) => {
             touchStartY = event.touches[0].clientY;
-            touchStartTime = Date.now();
+            isTouching = true;
         };
         
-        const handleTouchEnd = (event) => {
-            if (isScrollingRef.current) return;
+        const handleTouchMove = (event) => {
+            if (!isTouching || isScrollingRef.current) return;
             
-            const touchEndY = event.changedTouches[0].clientY;
-            const touchEndTime = Date.now();
-            const deltaY = touchStartY - touchEndY;
-            const deltaTime = touchEndTime - touchStartTime;
+            const touchCurrentY = event.touches[0].clientY;
+            const deltaY = touchStartY - touchCurrentY;
             
-            // Only trigger on significant swipe (> 50px) and reasonable speed (< 300ms)
-            if (Math.abs(deltaY) > 50 && deltaTime < 300) {
+            // More sensitive touch detection for mobile
+            if (Math.abs(deltaY) > 30) {
+                event.preventDefault();
                 const syntheticEvent = {
-                    deltaY: deltaY > 0 ? 100 : -100,
-                    preventDefault: () => event.preventDefault()
+                    deltaY: deltaY > 0 ? 50 : -50,
+                    preventDefault: () => {}
                 };
                 handleWheel(syntheticEvent);
+                isTouching = false;
             }
+        };
+        
+        const handleTouchEnd = () => {
+            isTouching = false;
         };
 
         window.addEventListener('wheel', handleWheel, { passive: false });
         window.addEventListener('touchstart', handleTouchStart, { passive: true });
-        window.addEventListener('touchend', handleTouchEnd, { passive: false });
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
         return () => {
             window.removeEventListener('wheel', handleWheel);
             window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchmove', handleTouchMove);
             window.removeEventListener('touchend', handleTouchEnd);
         };
     }, []);
 
-    // Intersection Observer for proper animation triggering on all devices
+    // Intersection Observer for mobile fallback and better visibility detection
     useEffect(() => {
+        const isMobile = window.innerWidth <= 768;
+        
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        // Find the index of this section
-                        const sectionIndex = sectionRefs.findIndex(ref => ref.current === entry.target);
-                        if (sectionIndex !== -1 && sectionIndex !== currentIndexRef.current) {
-                            // Update current index and trigger animation
-                            currentIndexRef.current = sectionIndex;
-                            
-                            // Apply the same animation logic as the wheel handler
-                            sectionRefs.forEach((ref, index) => {
-                                const sectionEl = ref.current;
-                                if (sectionEl) {
-                                    if (index === sectionIndex) {
-                                        sectionEl.classList.add('in-view');
-                                        sectionEl.classList.remove('exit-left');
-                                    } else if (index < sectionIndex) {
-                                        sectionEl.classList.add('exit-left');
-                                        sectionEl.classList.remove('in-view');
-                                    } else {
-                                        sectionEl.classList.remove('in-view', 'exit-left');
+                    const sectionIndex = sectionRefs.findIndex(ref => ref.current === entry.target);
+                    
+                    if (entry.isIntersecting && sectionIndex !== -1) {
+                        // On mobile, show immediately when visible
+                        if (isMobile) {
+                            entry.target.classList.add('in-view');
+                            entry.target.classList.remove('exit-left');
+                        } else {
+                            // On desktop, use the existing scroll logic
+                            if (sectionIndex !== currentIndexRef.current) {
+                                currentIndexRef.current = sectionIndex;
+                                sectionRefs.forEach((ref, index) => {
+                                    const sectionEl = ref.current;
+                                    if (sectionEl) {
+                                        if (index === sectionIndex) {
+                                            sectionEl.classList.add('in-view');
+                                            sectionEl.classList.remove('exit-left');
+                                        } else if (index < sectionIndex) {
+                                            sectionEl.classList.add('exit-left');
+                                            sectionEl.classList.remove('in-view');
+                                        } else {
+                                            sectionEl.classList.remove('in-view', 'exit-left');
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
                 });
             },
             {
-                threshold: 0.3, // Require 30% visibility to trigger
-                rootMargin: '-10px'
+                threshold: isMobile ? 0.2 : 0.3,
+                rootMargin: isMobile ? '0px' : '-10px'
             }
         );
 
